@@ -2,6 +2,14 @@ package data;
 
 import model.Einstellungen;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Datahandler für das Speichern und Laden der Saves vom Spielstand
  *
@@ -68,8 +76,22 @@ public class DataHandler {
      * @return boolean
      */
     public Boolean loadGame(){
-        //TODO
-        return false;
+        Boolean returnValue = false;
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader("/resources/saves/saves.csv"));
+            String[] line = reader.readLine().split(",");
+            if (line.length == 2){
+                punktezahlSpieler1 = Integer.parseInt(line[0]);
+                punktezahlSpieler2 = Integer.parseInt(line[1]);
+                returnValue = true;
+            }
+        }
+        catch (Exception e){
+            //nichts
+        }
+        finally {
+            return returnValue;
+        }
     }
 
     /**
@@ -78,6 +100,18 @@ public class DataHandler {
      * @param punktezahlSpieler2
      */
     public void saveGame(int punktezahlSpieler1, int punktezahlSpieler2){
-        //TODO
+        try {
+            File savesFile = new File("../../resources/saves/saves.csv");
+            savesFile.createNewFile();      //Wenn es schon existiert, dann macht es nichts. Ansonsten erstellt es das File
+
+            BufferedWriter writer = Files.newBufferedWriter(Paths.get(savesFile.getPath()));
+            writer.write(punktezahlSpieler1 + ", " + punktezahlSpieler2);
+            writer.close();
+
+
+        } catch (Exception e){
+            //nichts
+        }
+
     }
 }
