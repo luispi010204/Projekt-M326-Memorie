@@ -1,9 +1,10 @@
-package control;
+package spielcontroller;
 
 
 import data.DataHandler;
 import model.Einstellungen;
 import model.Spieler;
+import model.Spielfeld;
 
 /**
  * Diese Klasse beinhaltet die gesamte Spiellogik

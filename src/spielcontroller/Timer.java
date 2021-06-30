@@ -1,4 +1,4 @@
-package control;
+package spielcontroller;
 
 /**
  * Timerklasse für den Gebrauch im Profimodus
