@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -28,16 +29,20 @@ public class SpielfeldGUI extends JFrame {
     private JPanel rasterPanel;
     private Font labelFont;
 
-    public SpielfeldGUI(Vector<Memorykarte> karten, boolean timer){
+    private Vector<JButton> buttons;
+
+    public SpielfeldGUI(Vector<ImageIcon> imageIcons, boolean timer){
         super("Memory");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setPreferredSize(new Dimension(800, 800));
-        init(karten);
+        init(imageIcons);
         this.pack();
         setVisible(true);
     }
 
-    public void init(Vector<Memorykarte> karten) {
+    public void init(Vector<ImageIcon> imageIcons) {
+
+        buttons = new Vector<>(imageIcons.size() * 2);
 
         labelFont = new Font("Monaco", Font.ITALIC, 20);
 
@@ -55,13 +60,24 @@ public class SpielfeldGUI extends JFrame {
 
         hauptmenu = new JButton("Hauptmenu");
         weiterspielen = new JButton("Weiterspielen");
-        spielraster = new JPanel(new GridLayout(6, 6));
 
+        spielraster = new JPanel(new GridLayout((imageIcons.size() + 1) / 2, (imageIcons.size() + 1) / 2));
+
+        /*
         for (Memorykarte karte : karten){
             //so machsch es wenn Bilder dinne sind
         }
-        for (int x = 0; x < karten.size(); x++){
-            spielraster.add(new JButton(String.valueOf(x)),x);;
+
+         */
+        for (int x = 0; x < imageIcons.size(); x++){
+            buttons.add(new JButton(imageIcons.get(x)));
+            buttons.add(new JButton(imageIcons.get(x)));
+        }
+
+        Collections.shuffle(buttons);
+
+        for (int x = 0; x < buttons.size(); x++){
+            spielraster.add(buttons.get(x));
         }
 
         spielraster.setBackground(Color.RED);
@@ -90,10 +106,8 @@ public class SpielfeldGUI extends JFrame {
     }
 
     public static void main (String[] args){
-        Vector<Memorykarte> karten = new Vector<>();
-        for (int i = 0; i < 36; i++){
-            karten.add(new Memorykarte(String.valueOf(i)));
-        }
-        new SpielfeldGUI(karten,false);
+        Vector<ImageIcon> imageIcons = new Vector<>();
+
+        new SpielfeldGUI(imageIcons,false);
     }
 }

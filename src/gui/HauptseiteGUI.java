@@ -1,7 +1,11 @@
 package gui;
 
+import spielcontroller.Spiellogik;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Dies ist eine Klasse die das GUI erstellt.
@@ -12,6 +16,8 @@ import java.awt.*;
  */
 public class HauptseiteGUI extends JFrame {
 
+    private HauptseiteGUI instance;
+    private Spiellogik spiellogik;
     private JButton buttonSpielen;
     private JButton buttonEinstellungen;
     private JButton buttonVerlassen;
@@ -25,13 +31,15 @@ public class HauptseiteGUI extends JFrame {
     /**
      * das ist der Konstruktor für das GUI
      */
-public HauptseiteGUI() {
+public HauptseiteGUI(Spiellogik spiellogik) {
 
     this.setTitle("Hauptseite");
 
-    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //GUI wird geschlossen bei Exit. (x)
+    this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //GUI wird nicht geschlossen bei Exit. (x)
 
 
+    this.instance = this;
+    this.spiellogik = spiellogik;
 
     buttonSpielen = new JButton("Spielen");
     buttonEinstellungen = new JButton("Einstellungen");
@@ -54,17 +62,44 @@ public HauptseiteGUI() {
     this.getContentPane().add(titel, BorderLayout.NORTH);
 
 
+    addListeners();
+
 
     setResizable(false);
     setVisible(true); //setzt die Sichtbarkeit auf true.
     pack();
+    setSize(800, 600);
 
 }
 
-    public static void main(String[] args) {
 
-    HauptseiteGUI gui = new HauptseiteGUI();
-    gui.setSize(800, 600);
+
+    private void addListeners(){
+        buttonSpielen.addActionListener(new SpielenButton());
+        buttonEinstellungen.addActionListener(new EinstellungenButton());
+        buttonVerlassen.addActionListener(new VerlassenButton());
+    }
+
+
+    class SpielenButton implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            spiellogik.startGame();
+        }
+    }
+
+    class EinstellungenButton implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            spiellogik.startEinstellungen(instance);
+        }
+    }
+
+    class VerlassenButton implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+        }
     }
 
 }

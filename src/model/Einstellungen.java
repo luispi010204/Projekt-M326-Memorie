@@ -19,7 +19,7 @@ public class Einstellungen {
      * Default Konstruktor
      */
     public Einstellungen(){
-        schwierigkeitsstufe = 1;
+        schwierigkeitsstufe = 0;
         bonusstreak = false;
         spielfeldGroesse = 6;
         jokerkarten = false;
