@@ -29,10 +29,15 @@ public class Spiellogik {
     private DataHandler dataHandler;
     private Spielfeld spielfeld;
     private Vector<Memorykarte> memorykarten;
+    private Vector<JButton> buttons;
+    private Vector<ImageIcon> imageIcons;
     private Einstellungen einstellungen;
     private Timer timer;
     private Spieler spieler1;
     private Spieler spieler2;
+
+    private Spieler spielerAnDerReihe = spieler1;
+    private int zug = 0;
 
     /**
      * Konstruktor
@@ -69,14 +74,19 @@ public class Spiellogik {
 
     //Methoden
 
+    public void buttonGedrueckt(int indexOfButton){
+        Memorykarte karte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
+        System.out.println(karte.getId());
+    }
+
     /**
      * Beinhaltet die Spiellogik
      */
     public void startGame(){
-        System.out.println("Spiel wurde gestartet");    //DEBUG
-
         //Wenn Schwierigkeitsstufe 1 ist, heisst das, dass es profimodus ist. Dies heisst, dass es einen Timer gibt
-        spielfeldGUI = new SpielfeldGUI(kartenAufbereiten(), einstellungen.getSchwierigkeitsstufe() == 1 ? true : false);
+        spielfeldGUI = new SpielfeldGUI(this,kartenAufbereiten(),einstellungen.getSchwierigkeitsstufe() == 1);
+
+
     }
 
     /**
@@ -103,7 +113,8 @@ public class Spiellogik {
      * Jedoch wird hier auch gleich der Memorykarten-Vector, mit der jeweiligen Referenz zum Bild in der Memorykarte, erstellt
      * @return imageIcons
      */
-    public Vector<ImageIcon> kartenAufbereiten(){
+    private Vector<JButton> kartenAufbereiten(){
+        Vector<JButton> buttons = new Vector<>((int)Math.pow(einstellungen.getSpielfeldGroesse(), 2));
         Vector<ImageIcon> imageIcons = dataHandler.randomBilder((int)(Math.pow(einstellungen.getSpielfeldGroesse(), 2) / 2));
 
         memorykarten = new Vector<>((int)Math.pow(einstellungen.getSchwierigkeitsstufe(), 2));
@@ -126,9 +137,19 @@ public class Spiellogik {
                 memorykarten.add(new Memorykarte(i));
             }
 
+
+        }
+        //damit sie auf dem Spielfeld random verteilt sind
+        Collections.shuffle(memorykarten);
+
+        for (int i = 0; i < memorykarten.size(); i++) {
+            buttons.add(new JButton(imageIcons.get(memorykarten.get(i).getId())));
         }
 
-        return imageIcons;
+        this.buttons = buttons;
+        this.imageIcons = imageIcons;
+
+        return buttons;
     }
 
 

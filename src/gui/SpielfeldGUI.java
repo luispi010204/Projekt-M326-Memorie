@@ -1,12 +1,11 @@
 package gui;
 
-import model.Memorykarte;
+import spielcontroller.Spiellogik;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.Collections;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 /**
@@ -16,6 +15,7 @@ import java.util.Vector;
  */
 public class SpielfeldGUI extends JFrame {
 
+    private Spiellogik spiellogik;
     private JLabel spielstand1;
     private JLabel spielstand2;
     private JLabel spieler1;
@@ -30,19 +30,25 @@ public class SpielfeldGUI extends JFrame {
     private Font labelFont;
 
     private Vector<JButton> buttons;
+    private Vector<JButton> origButtons;
 
-    public SpielfeldGUI(Vector<ImageIcon> imageIcons, boolean timer){
+    public SpielfeldGUI(Spiellogik spiellogik, Vector<JButton> buttons, boolean timer){
         super("Memory");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setPreferredSize(new Dimension(800, 800));
-        init(imageIcons);
+        this.spiellogik = spiellogik;
+        origButtons = new Vector<>(buttons.size());
+        for (JButton x : buttons){
+            origButtons.add(new JButton(x.getIcon()));
+        }
+        this.buttons = buttons;
+        init();
+        addListener();
         this.pack();
         setVisible(true);
     }
 
-    public void init(Vector<ImageIcon> imageIcons) {
-
-        buttons = new Vector<>(imageIcons.size() * 2);
+    public void init() {
 
         labelFont = new Font("Monaco", Font.ITALIC, 20);
 
@@ -61,22 +67,13 @@ public class SpielfeldGUI extends JFrame {
         hauptmenu = new JButton("Hauptmenu");
         weiterspielen = new JButton("Weiterspielen");
 
-        spielraster = new JPanel(new GridLayout((imageIcons.size() + 1) / 2, (imageIcons.size() + 1) / 2));
+        int size = (int)Math.sqrt(buttons.size());
+        spielraster = new JPanel(new GridLayout(size, size));
 
-        /*
-        for (Memorykarte karte : karten){
-            //so machsch es wenn Bilder dinne sind
-        }
-
-         */
-        for (int x = 0; x < imageIcons.size(); x++){
-            buttons.add(new JButton(imageIcons.get(x)));
-            buttons.add(new JButton(imageIcons.get(x)));
-        }
-
-        Collections.shuffle(buttons);
 
         for (int x = 0; x < buttons.size(); x++){
+            buttons.get(x).setIcon(null);
+            buttons.get(x).setIcon(origButtons.get(x).getIcon());
             spielraster.add(buttons.get(x));
         }
 
@@ -105,9 +102,18 @@ public class SpielfeldGUI extends JFrame {
 
     }
 
-    public static void main (String[] args){
-        Vector<ImageIcon> imageIcons = new Vector<>();
+    private void addListener(){
+        for (JButton button : buttons){
+            button.addActionListener(new MemoryButtonListener());
+        }
+    }
 
-        new SpielfeldGUI(imageIcons,false);
+
+    class MemoryButtonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int index = buttons.indexOf(e.getSource());
+            spiellogik.buttonGedrueckt(index);
+        }
     }
 }
