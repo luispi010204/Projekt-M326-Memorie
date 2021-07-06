@@ -159,10 +159,14 @@ public class DataHandler {
         Object[] tmpArr = randomPaths.subList(0, anzahl).toArray();
         bilderPath = Arrays.copyOf(tmpArr, tmpArr.length, String[].class);
 
+
         try {
             for (int i = 0; i < anzahl; i++) {
                 //Füllt den Vector mit den Bildern ab
-                imageIcons.add(new ImageIcon(ImageIO.read(new File("resources/bilder/" + bilderPath[i]))));
+                ImageIcon icon = new ImageIcon(ImageIO.read(new File("resources/bilder/" + bilderPath[i])));
+                icon.setImage(icon.getImage().getScaledInstance(80,80,Image.SCALE_FAST));
+                imageIcons.add(icon);
+
             }
         }
         catch (IOException e){
