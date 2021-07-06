@@ -84,7 +84,7 @@ public class DataHandler {
     public Boolean loadGame(){
         Boolean returnValue = false;
         try{
-            BufferedReader reader = new BufferedReader(new FileReader("/resources/saves/saves.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("resources/saves/saves.csv"));
             String[] line = reader.readLine().split(",");
             if (line.length == 2){
                 punktezahlSpieler1 = Integer.parseInt(line[0]);
@@ -106,7 +106,7 @@ public class DataHandler {
             }
         }
         catch (Exception e){
-            //nichts
+            e.printStackTrace();
         }
         finally {
             return returnValue;
@@ -120,7 +120,7 @@ public class DataHandler {
      */
     public void saveGame(int punktezahlSpieler1, int punktezahlSpieler2, Einstellungen einstellungen){
         try {
-            File savesFile = new File("../../resources/saves/saves.csv");
+            File savesFile = new File("resources/saves/saves.csv");
             savesFile.createNewFile();      //Wenn es schon existiert, dann macht es nichts. Ansonsten erstellt es das File
 
             BufferedWriter writer = Files.newBufferedWriter(Paths.get(savesFile.getPath()));
@@ -133,7 +133,7 @@ public class DataHandler {
 
 
         } catch (Exception e){
-            //nichts
+            e.printStackTrace();
         }
 
     }

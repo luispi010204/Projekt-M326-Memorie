@@ -12,7 +12,6 @@ import model.Spielfeld;
 
 import javax.swing.*;
 import java.util.Collections;
-import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -32,12 +31,15 @@ public class Spiellogik {
     private Vector<JButton> buttons;
     private Vector<ImageIcon> imageIcons;
     private Einstellungen einstellungen;
-    private Timer timer;
+    private Stoppuhr timer;
     private Spieler spieler1;
     private Spieler spieler2;
 
-    private Spieler spielerAnDerReihe = spieler1;
-    private int zug = 0;
+    private Spieler spielerAnDerReihe;
+    private Memorykarte letzteKarte;
+    private int letzerButtonIndex;
+    private int streak = 0;
+    private int count = 0;
 
     /**
      * Konstruktor
@@ -55,11 +57,12 @@ public class Spiellogik {
         }
 
         if (einstellungen.getSchwierigkeitsstufe() == 2){
-            timer = new Timer();
+            timer = new Stoppuhr();
         }
 
         spieler1 = new Spieler("Spieler 1", dataHandler.getPunktezahlSpieler1());
         spieler2 = new Spieler("Spieler 2", dataHandler.getPunktezahlSpieler2());
+        spielerAnDerReihe = spieler1;
 
     }
 
@@ -70,13 +73,56 @@ public class Spiellogik {
         return instance;
     }
 
+    public int getLetzerButtonIndex(){
+        return letzerButtonIndex;
+    }
 
+    public int getSpielstaende(int spielerNr){
+        if (spielerNr == 1){
+            return spieler1.getPunktestand();
+        }
+        return spieler2.getPunktestand();
+
+    }
 
     //Methoden
 
-    public void buttonGedrueckt(int indexOfButton){
-        Memorykarte karte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
-        System.out.println(karte.getId());
+    public int buttonGedrueckt(int indexOfButton){
+        int code = -1;
+        if (letzteKarte == null){
+            letzteKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
+            letzerButtonIndex = indexOfButton;
+            code = 0;
+            if (einstellungen.getSchwierigkeitsstufe() == 2){
+                //Timer erstellten
+            }
+        }
+        else if (count < memorykarten.size() / 2){
+            Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
+            code = 1;
+            if (letzteKarte.getId() == jetzigeKarte.getId()){
+                if (einstellungen.getBonusstreak()){
+                    jetzigeKarte.streak(streak);
+                    streak++;
+                }
+                spielerAnDerReihe.punkteHinzufuegen(jetzigeKarte.getPunkte());
+                spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;    //Damit er weiterspielen kann
+                count++;
+                code = 2;
+            }
+            if (einstellungen.getBonusstreak() && code != 2){
+                streak = 0;
+            }
+            spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
+            letzteKarte = null;
+
+        }
+        else {      //Spiel ist vorbei
+            dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
+            //entweder neues GUI, oder zurück zum Hauptmenu     //TODO
+        }
+
+        return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden
     }
 
     /**
@@ -124,8 +170,7 @@ public class Spiellogik {
             if (einstellungen.getJokerkarten()){
                 if (Math.random() > 0.9){   //Chance von 1 zu 10, dass es eine Jokerkarte gibt
                     memorykarten.add(new Memorykarte(i,2));
-                    //memorykarten.add(new Memorykarte(i,2));   --???   Macht man das 2 mal??????????????????
-                    //memorykarten.add(new Memorykarte(i));  <-- Ansonsten so   //TODO
+                    memorykarten.add(new Memorykarte(i,2));
                 }
                 else {
                     memorykarten.add(new Memorykarte(i));

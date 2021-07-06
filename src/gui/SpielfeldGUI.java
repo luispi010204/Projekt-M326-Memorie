@@ -1,11 +1,13 @@
 package gui;
 
 import spielcontroller.Spiellogik;
+import spielcontroller.Stoppuhr;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
 import java.util.Vector;
 
 /**
@@ -23,6 +25,7 @@ public class SpielfeldGUI extends JFrame {
     private JPanel spielraster;
     private JButton hauptmenu;
     private JButton weiterspielen;
+    private JPanel untenPanel;
     private JPanel obenPanel;
     private JPanel obenLinks;
     private JPanel obenRechts;
@@ -57,15 +60,16 @@ public class SpielfeldGUI extends JFrame {
         spieler2 = new JLabel("Spieler 2");
         spieler2.setFont(labelFont);
 
-        spielstand1 = new JLabel("1");
+        spielstand1 = new JLabel(String.valueOf(spiellogik.getSpielstaende(1)));
         spielstand1.setFont(labelFont);
-        spielstand2 = new JLabel("2");
+        spielstand2 = new JLabel(String.valueOf(spiellogik.getSpielstaende(2)));
         spielstand2.setFont(labelFont);
         spielstand1.setBorder(BorderFactory.createLineBorder(Color.black, 2));
         spielstand2.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 
         hauptmenu = new JButton("Hauptmenu");
         weiterspielen = new JButton("Weiterspielen");
+        //weiterspielen.setEnabled(false);
 
         int size = (int)Math.sqrt(buttons.size());
         spielraster = new JPanel(new GridLayout(size, size));
@@ -73,13 +77,14 @@ public class SpielfeldGUI extends JFrame {
 
         for (int x = 0; x < buttons.size(); x++){
             buttons.get(x).setIcon(null);
-            buttons.get(x).setIcon(origButtons.get(x).getIcon());
+            //buttons.get(x).setIcon(origButtons.get(x).getIcon());
             spielraster.add(buttons.get(x));
         }
 
         spielraster.setBackground(Color.RED);
 
 
+        untenPanel = new JPanel(new BorderLayout());
         obenPanel = new JPanel(new BorderLayout(0, 20));
         obenLinks = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
         obenRechts = new JPanel(new FlowLayout(FlowLayout.RIGHT,20,10));
@@ -92,12 +97,16 @@ public class SpielfeldGUI extends JFrame {
         obenPanel.add(obenLinks, BorderLayout.WEST);
         obenPanel.add(obenRechts, BorderLayout.EAST);
 
+        untenPanel.add(hauptmenu, BorderLayout.CENTER);
+        untenPanel.add(weiterspielen, BorderLayout.EAST);
+
         rasterPanel = new JPanel(new BorderLayout(20, 20));
         rasterPanel.add(spielraster, BorderLayout.CENTER);
 
         getContentPane().setLayout(new BorderLayout(10, 0));
         getContentPane().add(obenPanel, BorderLayout.NORTH);
         getContentPane().add(rasterPanel, BorderLayout.CENTER);
+        getContentPane().add(untenPanel, BorderLayout.SOUTH);
 
 
     }
@@ -106,6 +115,23 @@ public class SpielfeldGUI extends JFrame {
         for (JButton button : buttons){
             button.addActionListener(new MemoryButtonListener());
         }
+        hauptmenu.addActionListener(new HauptmenuButtonListener());
+        weiterspielen.addActionListener(new WeiterspielenButtonListener());
+    }
+
+    class HauptmenuButtonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+        }
+    }
+
+    class WeiterspielenButtonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            spiellogik.startGame();
+        }
     }
 
 
@@ -113,7 +139,47 @@ public class SpielfeldGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             int index = buttons.indexOf(e.getSource());
-            spiellogik.buttonGedrueckt(index);
+
+            //if (spiellogik.getLetzerButtonIndex() != index){
+                //buttons.get(index).setEnabled(false);
+                buttons.get(index).setIcon(origButtons.get(index).getIcon());
+
+
+                switch (spiellogik.buttonGedrueckt(index)){
+                    case 0:
+                        //wenn timer, dann visuellen Timer starten
+                        break;
+                    case 1:
+                        //warten(2000);
+                        buttons.get(index).setIcon(null);
+                        buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
+                        buttons.get(index).setEnabled(true);
+                        buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
+
+                        break;
+                    case 2:
+                        //warten(2000);
+                        buttons.get(index).setVisible(false);
+                        buttons.get(spiellogik.getLetzerButtonIndex()).setVisible(false);
+
+                        spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
+                        spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
+
+                        break;
+                }
+            //}
+
+
+
+        }
+
+        private void warten(int n){
+            Timer sleep = new Timer();
+            try {
+                sleep.wait(n);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

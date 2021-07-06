@@ -8,6 +8,6 @@ package spielcontroller;
  * @since 29.06.2021
  */
 
-public class Timer {
+public class Stoppuhr {
     //TODO
 }
