@@ -42,7 +42,7 @@ public void stimmtDerPunktestand(){
     public void testName(){
 
         assertEquals("Luigi", spieler1.getName());
-        assertEquals("Martin", spieler2.getPunktestand());
+        assertEquals("Martin", spieler2.getName());
     }
 
 
