@@ -67,6 +67,7 @@ public class SpielfeldGUI extends JFrame {
         spieler2.setFont(labelFont);
         if (timer){
             timerPanel = new JLabel("5");
+            timerPanel.setFont(labelFont);
         }
 
         spielstand1 = new JLabel(String.valueOf(spiellogik.getSpielstaende(1)));
