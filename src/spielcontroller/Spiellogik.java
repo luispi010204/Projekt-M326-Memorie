@@ -40,6 +40,7 @@ public class Spiellogik {
     private Spieler spielerAnDerReihe;
     private Memorykarte letzteKarte;
     private int letzerButtonIndex;
+    private boolean ersterZug;
     private int streak = 0;
     private int count = 0;
 
@@ -88,14 +89,14 @@ public class Spiellogik {
 
     public int buttonGedrueckt(int indexOfButton){
         int code = -1;
-        if (letzteKarte == null){
-            letzteKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
+        if (ersterZug){
             letzerButtonIndex = indexOfButton;
             code = 0;
             if (einstellungen.getSchwierigkeitsstufe() == 1){
                 timer = new Timer();
                 timerPanel(5, indexOfButton);
             }
+            ersterZug = false;
         }
         else {
             Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
@@ -114,14 +115,15 @@ public class Spiellogik {
                 streak = 0;
             }
             spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
-            letzteKarte = null;
 
             if (count >= memorykarten.size() / 2){  //Spiel ist vorbei
                 dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
                 code = 3;
             }
+            ersterZug = true;
         }
 
+        letzteKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
         return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
     }
 
@@ -149,10 +151,11 @@ public class Spiellogik {
             spielfeldGUI.setTimer(0);
             timer.cancel();
             buttons.get(indexOfButton).setIcon(null);
-            if (spielerAnDerReihe == alterSpielerAnDerReihe){
+            if (spielerAnDerReihe != alterSpielerAnDerReihe){   //ungleich, weil es sich hier bereits gedreht hat
                 buttons.get(letzerButtonIndex).setIcon(null);
             }
             spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
+            ersterZug = true;
             letzteKarte = null;
         }
 
@@ -164,7 +167,7 @@ public class Spiellogik {
     public void startGame(){
         //Wenn Schwierigkeitsstufe 1 ist, heisst das, dass es profimodus ist. Dies heisst, dass es einen Timer gibt
         spielfeldGUI = new SpielfeldGUI(this,kartenAufbereiten(),einstellungen.getSchwierigkeitsstufe() == 1);
-
+        ersterZug = true;
 
     }
 
