@@ -36,6 +36,9 @@ public class SpielfeldGUI extends JFrame {
 
     private Vector<JButton> buttons;
     private Vector<JButton> origButtons;
+    JButton alterAlterButton;
+    JButton alterButton;
+    int letzerCode;
 
     public SpielfeldGUI(Spiellogik spiellogik, Vector<JButton> buttons, boolean timer){
         super("Memory");
@@ -47,6 +50,7 @@ public class SpielfeldGUI extends JFrame {
             origButtons.add(new JButton(x.getIcon()));
         }
         this.buttons = buttons;
+        letzerCode = -1;
         init(timer);
         addListener();
         this.pack();
@@ -148,39 +152,49 @@ public class SpielfeldGUI extends JFrame {
     class MemoryButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton alterAlterButton;
-            JButton alterButton;
             int index = buttons.indexOf(e.getSource());
 
-            buttons.get(index).setIcon(origButtons.get(index).getIcon());
+            if (index != spiellogik.getLetzerButtonIndex() || letzerCode == -1){
+                buttons.get(index).setIcon(origButtons.get(index).getIcon());
 
-            int code = spiellogik.buttonGedrueckt(index);
+                int code = spiellogik.buttonGedrueckt(index);
 
-            switch (code){
-                case 0:
-                    //nichts
-                    break;
-                case 1:
-                    //warten(2000);
-                    alterButton = buttons.get(index);
-                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
-                            //buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
-                    buttons.get(index).setEnabled(true);
-                    buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
+                switch (code){
+                    case 0:
+                        if (alterButton != null && alterAlterButton != null){
+                            alterButton.setIcon(null);
+                            alterAlterButton.setIcon(null);
+                            if (letzerCode == 2){
+                                alterButton.setVisible(false);
+                                alterAlterButton.setVisible(false);
+                            }
+                        }
+                        break;
+                    case 1:
+                        //warten(2000);
+                        alterButton = buttons.get(index);
+                        alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
+                        //buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
+                        buttons.get(index).setEnabled(true);
+                        buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
 
-                    break;
-                case 2:
-                    //warten(2000);
-                    alterButton = buttons.get(index);
-                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
+                        break;
+                    case 2:
+                        //warten(2000);
+                        alterButton = buttons.get(index);
+                        alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
 
-                    spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
-                    spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
+                        spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
+                        spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
 
-                    break;
-                case 3:
-                    weiterspielen.setEnabled(true);
+                        break;
+                    case 3:
+                        weiterspielen.setEnabled(true);
+                }
+                letzerCode = code;
             }
+
+
 
         }
 

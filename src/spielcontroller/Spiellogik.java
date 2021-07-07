@@ -120,7 +120,6 @@ public class Spiellogik {
             if (count >= memorykarten.size() / 2){  //Spiel ist vorbei
                 dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
                 code = 3;
-                //entweder neues GUI, oder zurück zum Hauptmenu     //TODO
             }
         }
 
