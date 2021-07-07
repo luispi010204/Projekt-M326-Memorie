@@ -28,7 +28,11 @@ public class SpielTest {
     }
 
    @Test
-    public void werBeginnt() {
-    //TODO
+    public void InstanceTesten() {
+
+        spiellogik.getInstance();
+        assertEquals(spiellogik, spiellogik.getInstance());
+
+
     }
 }
