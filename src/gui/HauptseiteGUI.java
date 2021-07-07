@@ -24,7 +24,7 @@ public class HauptseiteGUI extends JFrame {
 
 
     JPanel buttonPanel = new JPanel();
-    JLabel titel = new JLabel();
+    JLabel titel = new JLabel("", SwingConstants.CENTER);
 
 
 
@@ -37,24 +37,35 @@ public HauptseiteGUI(Spiellogik spiellogik) {
 
     this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //GUI wird nicht geschlossen bei Exit. (x)
 
-
     this.instance = this;
     this.spiellogik = spiellogik;
+
+    Font buttonFont = new Font("Monaco",Font.PLAIN,20);
 
     buttonSpielen = new JButton("Spielen");
     buttonEinstellungen = new JButton("Einstellungen");
     buttonVerlassen = new JButton("Verlassen");
 
-
-    buttonPanel.setLayout(new BorderLayout());
+    buttonSpielen.setFont(buttonFont);
+    buttonEinstellungen.setFont(buttonFont);
+    buttonVerlassen.setFont(buttonFont);
 
     titel.setText("Memory");
     titel.setFont(new Font("Monaco", Font.ITALIC, 80));
 
-    buttonPanel.setLayout(new GridBagLayout());
+    buttonSpielen.setAlignmentX(Component.CENTER_ALIGNMENT);
+    buttonEinstellungen.setAlignmentX(Component.CENTER_ALIGNMENT);
+    buttonVerlassen.setAlignmentX(Component.CENTER_ALIGNMENT);
+    titel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
+    buttonPanel.add(titel);
+    buttonPanel.add(Box.createRigidArea(new Dimension(0, 40)));
     buttonPanel.add(buttonSpielen);
+    buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
     buttonPanel.add(buttonEinstellungen);
+    buttonPanel.add(Box.createRigidArea(new Dimension(0, 30)));
     buttonPanel.add(buttonVerlassen);
 
 
@@ -101,5 +112,4 @@ public HauptseiteGUI(Spiellogik spiellogik) {
             dispose();
         }
     }
-
 }

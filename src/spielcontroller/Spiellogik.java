@@ -242,6 +242,6 @@ public class Spiellogik {
         new HauptseiteGUI(spiellogik.getInstance());
 
 
-        //spiellogik.speichern();
+        spiellogik.speichern();
     }
 }
