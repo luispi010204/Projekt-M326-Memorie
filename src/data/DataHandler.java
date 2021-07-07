@@ -105,8 +105,8 @@ public class DataHandler {
                 returnValue = false;
             }
         }
-        catch (Exception e){
-            e.printStackTrace();
+        catch (NullPointerException e){
+
         }
         finally {
             return returnValue;
@@ -124,9 +124,10 @@ public class DataHandler {
             savesFile.createNewFile();      //Wenn es schon existiert, dann macht es nichts. Ansonsten erstellt es das File
 
             BufferedWriter writer = Files.newBufferedWriter(Paths.get(savesFile.getPath()));
-            writer.write(punktezahlSpieler1 + ", " + punktezahlSpieler2);
+            writer.write(punktezahlSpieler1 + "," + punktezahlSpieler2);
             this.punktezahlSpieler1 = punktezahlSpieler1;
             this.punktezahlSpieler2 = punktezahlSpieler2;
+            writer.newLine();
             writer.write(einstellungen.getSchwierigkeitsstufe() + "," + einstellungen.getBonusstreak() + "," + einstellungen.getSpielfeldGroesse() + "," + einstellungen.getJokerkarten());
             this.einstellungen = einstellungen;
             writer.close();
