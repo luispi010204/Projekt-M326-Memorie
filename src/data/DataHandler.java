@@ -117,6 +117,7 @@ public class DataHandler {
      * Speichert den Punktestand und die Einstellungen in ein CSV-File
      * @param punktezahlSpieler1
      * @param punktezahlSpieler2
+     * @param einstellungen
      */
     public void saveGame(int punktezahlSpieler1, int punktezahlSpieler2, Einstellungen einstellungen){
         try {

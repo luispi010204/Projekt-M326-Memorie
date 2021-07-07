@@ -113,13 +113,15 @@ public class Spiellogik {
     public int buttonGedrueckt(int indexOfButton){
         int code = -1;
         if (ersterZug){
-            letzerButtonIndex = indexOfButton;
-            code = 0;
-            if (einstellungen.getSchwierigkeitsstufe() == 1){
-                timer = new Timer();
-                timerPanel(5, indexOfButton);
+            if (letzerButtonIndex != indexOfButton){
+                letzerButtonIndex = indexOfButton;
+                code = 0;
+                if (einstellungen.getSchwierigkeitsstufe() == 1){
+                    timer = new Timer();
+                    timerPanel(5, indexOfButton);
+                }
+                ersterZug = false;
             }
-            ersterZug = false;
         }
         else {
             Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
@@ -180,13 +182,18 @@ public class Spiellogik {
         else {
             spielfeldGUI.setTimer(0);
             timer.cancel();
+            if (sekunden < 1){
+                buttons.get(indexOfButton).setIcon(null);
+            }
+            /*
             buttons.get(indexOfButton).setIcon(null);
             if (spielerAnDerReihe != alterSpielerAnDerReihe){   //ungleich, weil es sich hier bereits gedreht hat
                 buttons.get(letzerButtonIndex).setIcon(null);
             }
+
+             */
             spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
             ersterZug = true;
-            letzteKarte = null;
         }
 
     }

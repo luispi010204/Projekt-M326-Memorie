@@ -174,62 +174,50 @@ public class SpielfeldGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             int index = buttons.indexOf(e.getSource());
 
-            if (index != spiellogik.getLetzerButtonIndex() || letzerCode == -1){
-                buttons.get(index).setIcon(origButtons.get(index).getIcon());
+            buttons.get(index).setIcon(origButtons.get(index).getIcon());
 
-                int code = spiellogik.buttonGedrueckt(index);
+            int code = spiellogik.buttonGedrueckt(index);
 
-                switch (code){
-                    case 0:     //1. Karte gewählt
-                        if (alterButton != null && alterAlterButton != null){
-                            alterButton.setIcon(null);
-                            alterAlterButton.setIcon(null);
-                            if (letzerCode == 2){
-                                alterButton.setVisible(false);
-                                alterAlterButton.setVisible(false);
-                            }
-                        }
-                        break;
-                    case 1:     //2. Karte gewählt, aber nicht gleich
-                        alterButton = buttons.get(index);
-                        alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
-                        buttons.get(index).setEnabled(true);
-                        buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
-
-                        break;
-                    case 2:     //2. Karte gewählt, beide Karten sind gleich
-                        alterButton = buttons.get(index);
-                        alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
-
-                        spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
-                        spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
-
-                        break;
-                    case 3:     //Spiel ist fertig
+            switch (code){
+                case 0:     //1. Karte gewählt
+                    if (alterButton != null && alterAlterButton != null){
                         alterButton.setIcon(null);
                         alterAlterButton.setIcon(null);
                         if (letzerCode == 2){
                             alterButton.setVisible(false);
                             alterAlterButton.setVisible(false);
                         }
-                        weiterspielen.setEnabled(true);
+                    }
+                    break;
+                case 1:     //2. Karte gewählt, aber nicht gleich
+                    alterButton = buttons.get(index);
+                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
+                    buttons.get(index).setEnabled(true);
+                    buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
 
-                        break;
-                }
-                letzerCode = code;
+                    break;
+                case 2:     //2. Karte gewählt, beide Karten sind gleich
+                    alterButton = buttons.get(index);
+                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
+
+                    spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
+                    spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
+
+                    break;
+                case 3:     //Spiel ist fertig
+                    alterButton.setIcon(null);
+                    alterAlterButton.setIcon(null);
+                    if (letzerCode == 2){
+                        alterButton.setVisible(false);
+                        alterAlterButton.setVisible(false);
+                    }
+                    weiterspielen.setEnabled(true);
+
+                    break;
             }
-
-
-
+            letzerCode = code;
         }
 
-        private void warten(int n){
-            Timer sleep = new Timer();
-            try {
-                sleep.wait(n);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 }
