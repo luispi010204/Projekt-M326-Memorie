@@ -1,7 +1,6 @@
 package gui;
 
 import spielcontroller.Spiellogik;
-import spielcontroller.Stoppuhr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,6 +39,12 @@ public class SpielfeldGUI extends JFrame {
     JButton alterButton;
     int letzerCode;
 
+    /**
+     * Konstruktor
+     * @param spiellogik
+     * @param buttons
+     * @param timer
+     */
     public SpielfeldGUI(Spiellogik spiellogik, Vector<JButton> buttons, boolean timer){
         super("Memory");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -57,6 +62,10 @@ public class SpielfeldGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Initialisiert das GUI
+     * @param timer
+     */
     public void init(boolean timer) {
 
         labelFont = new Font("Monaco", Font.ITALIC, 20);
@@ -126,6 +135,9 @@ public class SpielfeldGUI extends JFrame {
 
     }
 
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     */
     private void addListener(){
         for (JButton button : buttons){
             button.addActionListener(new MemoryButtonListener());
@@ -134,6 +146,10 @@ public class SpielfeldGUI extends JFrame {
         weiterspielen.addActionListener(new WeiterspielenButtonListener());
     }
 
+    /**
+     * Setzt den Text der Timeranzeige
+     * @param s
+     */
     public void setTimer(int s){
         timerPanel.setText(String.valueOf(s));
     }
@@ -153,7 +169,6 @@ public class SpielfeldGUI extends JFrame {
         }
     }
 
-
     class MemoryButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -165,7 +180,7 @@ public class SpielfeldGUI extends JFrame {
                 int code = spiellogik.buttonGedrueckt(index);
 
                 switch (code){
-                    case 0:
+                    case 0:     //1. Karte gewählt
                         if (alterButton != null && alterAlterButton != null){
                             alterButton.setIcon(null);
                             alterAlterButton.setIcon(null);
@@ -173,20 +188,16 @@ public class SpielfeldGUI extends JFrame {
                                 alterButton.setVisible(false);
                                 alterAlterButton.setVisible(false);
                             }
-
                         }
                         break;
-                    case 1:
-                        //warten(2000);
+                    case 1:     //2. Karte gewählt, aber nicht gleich
                         alterButton = buttons.get(index);
                         alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
-                        //buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
                         buttons.get(index).setEnabled(true);
                         buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
 
                         break;
-                    case 2:
-                        //warten(2000);
+                    case 2:     //2. Karte gewählt, beide Karten sind gleich
                         alterButton = buttons.get(index);
                         alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
 
@@ -194,7 +205,7 @@ public class SpielfeldGUI extends JFrame {
                         spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
 
                         break;
-                    case 3:
+                    case 3:     //Spiel ist fertig
                         alterButton.setIcon(null);
                         alterAlterButton.setIcon(null);
                         if (letzerCode == 2){
@@ -202,6 +213,8 @@ public class SpielfeldGUI extends JFrame {
                             alterAlterButton.setVisible(false);
                         }
                         weiterspielen.setEnabled(true);
+
+                        break;
                 }
                 letzerCode = code;
             }

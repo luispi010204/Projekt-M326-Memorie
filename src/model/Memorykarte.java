@@ -38,14 +38,26 @@ public class Memorykarte {
 
     //Getter & Setter
 
+    /**
+     * Gibt die ID zurück
+     * @return id ist der Index zur Referenz des Bildes
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Gibt die Punkte zurück
+     * @return punkte
+     */
     public int getPunkte() {
         return punkte;
     }
 
+    /**
+     * Setzt die Punkte
+     * @param punkte
+     */
     public void setPunkte(int punkte) {
         this.punkte = punkte;
     }

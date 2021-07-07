@@ -84,7 +84,9 @@ public HauptseiteGUI(Spiellogik spiellogik) {
 }
 
 
-
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     */
     private void addListeners(){
         buttonSpielen.addActionListener(new SpielenButton());
         buttonEinstellungen.addActionListener(new EinstellungenButton());

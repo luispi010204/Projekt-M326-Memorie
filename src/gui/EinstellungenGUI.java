@@ -19,6 +19,10 @@ import java.awt.event.ActionListener;
 public class EinstellungenGUI extends JDialog {
     private Einstellungen einstellungen;
     private JDialog frame;
+    private JButton hauptmenuButton;
+    private JPanel einstellungenPanel;
+    private JPanel grossesEinstellungenPanel;
+
     private JComboBox spielmodusComboBox;
     private JLabel spielmodusLabel;
 
@@ -31,12 +35,13 @@ public class EinstellungenGUI extends JDialog {
     private JCheckBox bonusstreaksCheckBox;
     private JLabel bonusstreaksLabel;
 
-    private JButton hauptmenuButton;
 
-    private JPanel einstellungenPanel;
 
-    private JPanel grossesEinstellungenPanel;
-
+    /**
+     * Konstruktor
+     * @param parent
+     * @param einstellungen
+     */
     public EinstellungenGUI(JFrame parent, Einstellungen einstellungen){
         frame = new JDialog(parent,"Einstellungen", true);
         frame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -52,10 +57,17 @@ public class EinstellungenGUI extends JDialog {
 
     }
 
+    /**
+     * Gibt die geähnderten Einstellungen zurück
+     * @return Einstellungen-Objekt
+     */
     public Einstellungen getEinstellungen(){
         return einstellungen;
     }
 
+    /**
+     * initialisiert das GUI
+     */
     private void initComponent(){
         einstellungenPanel = new JPanel(new GridLayout(4,2));
         grossesEinstellungenPanel = new JPanel(new BorderLayout());
@@ -110,6 +122,9 @@ public class EinstellungenGUI extends JDialog {
         frame.getContentPane().add(hauptmenuButton, BorderLayout.SOUTH);
     }
 
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     */
     private void addListeners(){
         hauptmenuButton.addActionListener(new HauptmenuButton());
     }

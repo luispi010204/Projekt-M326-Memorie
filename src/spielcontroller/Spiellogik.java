@@ -8,7 +8,6 @@ import gui.SpielfeldGUI;
 import model.Einstellungen;
 import model.Memorykarte;
 import model.Spieler;
-import model.Spielfeld;
 
 import javax.swing.*;
 import java.util.Collections;
@@ -28,7 +27,6 @@ public class Spiellogik {
     private SpielfeldGUI spielfeldGUI;
     private Spiellogik instance;
     private DataHandler dataHandler;
-    private Spielfeld spielfeld;
     private Vector<Memorykarte> memorykarten;
     private Vector<JButton> buttons;
     private Vector<ImageIcon> imageIcons;
@@ -44,13 +42,16 @@ public class Spiellogik {
     private int streak = 0;
     private int count = 0;
 
+    private Spieler alterSpielerAnDerReihe;
+    private int sekunden = 0;
+
+
     /**
      * Konstruktor
      */
     public Spiellogik(){
         instance = this;
         dataHandler = DataHandler.getInstance();
-        spielfeld = new Spielfeld();
 
         if (dataHandler.loadGame()){
             einstellungen = new Einstellungen(dataHandler.getEinstellungen());
@@ -69,14 +70,27 @@ public class Spiellogik {
 
     //Getter & Setter
 
+    /**
+     * Gibt die Spiellogik-Instanz zurück
+     * @return instance
+     */
     public Spiellogik getInstance(){
         return instance;
     }
 
+    /**
+     * Gibt letzerButtonIndex zurück
+     * @return letzerButtonIndex
+     */
     public int getLetzerButtonIndex(){
         return letzerButtonIndex;
     }
 
+    /**
+     * Gibt die Punktzahl für den jeweiligen Spieler zurück
+     * @param spielerNr
+     * @return punktestand
+     */
     public int getSpielstaende(int spielerNr){
         if (spielerNr == 1){
             return spieler1.getPunktestand();
@@ -85,8 +99,17 @@ public class Spiellogik {
 
     }
 
+
     //Methoden
 
+    /**
+     * Wird aufgerufen, wenn ein Memorybutton betätigt wird.
+     * Hier ist essenziell die gesamte Spiellogik drin.
+     * Gibt einen Code zurück, der für einen Ausgangszustand steht.
+     * 0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
+     * @param indexOfButton
+     * @return code
+     */
     public int buttonGedrueckt(int indexOfButton){
         int code = -1;
         if (ersterZug){
@@ -127,8 +150,11 @@ public class Spiellogik {
         return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
     }
 
-    private Spieler alterSpielerAnDerReihe;
-    private int sekunden = 0;
+    /**
+     * Zuständig für den Ablauf des Timers
+     * @param s
+     * @param indexOfButton
+     */
     private void timerPanel(int s, int indexOfButton){
         this.sekunden = s;
         alterSpielerAnDerReihe = spielerAnDerReihe;
@@ -142,6 +168,10 @@ public class Spiellogik {
 
     }
 
+    /**
+     * Kümmert sich um die Folgen, wenn der Timer abgelaufen wird
+     * @param indexOfButton
+     */
     private void setTimerPanel(int indexOfButton){
         if (sekunden >= 1 && alterSpielerAnDerReihe == spielerAnDerReihe){
             spielfeldGUI.setTimer(sekunden);
@@ -162,7 +192,7 @@ public class Spiellogik {
     }
 
     /**
-     * Beinhaltet die Spiellogik
+     * Startet das Spiel
      */
     public void startGame(){
         //Wenn Schwierigkeitsstufe 1 ist, heisst das, dass es profimodus ist. Dies heisst, dass es einen Timer gibt
@@ -193,7 +223,7 @@ public class Spiellogik {
     /**
      * Dient, im Kern, als Zwischenmethoden zwischen GUI's und der randomBilder()-Methode im DataHandler
      * Jedoch wird hier auch gleich der Memorykarten-Vector, mit der jeweiligen Referenz zum Bild in der Memorykarte, erstellt
-     * @return imageIcons
+     * @return buttons mit integrierten ImageIcon, die direkt im GUI verwendet werden können.
      */
     private Vector<JButton> kartenAufbereiten(){
         Vector<JButton> buttons = new Vector<>((int)Math.pow(einstellungen.getSpielfeldGroesse(), 2));
@@ -217,7 +247,6 @@ public class Spiellogik {
                 memorykarten.add(new Memorykarte(i));
                 memorykarten.add(new Memorykarte(i));
             }
-
 
         }
         //damit sie auf dem Spielfeld random verteilt sind
@@ -243,8 +272,6 @@ public class Spiellogik {
     public static void main(String[] args) {
         Spiellogik spiellogik = new Spiellogik();
         new HauptseiteGUI(spiellogik.getInstance());
-
-
         spiellogik.speichern();
     }
 }
