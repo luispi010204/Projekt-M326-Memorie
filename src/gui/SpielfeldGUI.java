@@ -12,12 +12,14 @@ import java.util.Vector;
 
 /**
  * @author Marko Joksimovic
+ * @author Martin Düppenbecker
  * @version 1.0
  * @date
  */
 public class SpielfeldGUI extends JFrame {
 
     private Spiellogik spiellogik;
+    private JLabel timerPanel;
     private JLabel spielstand1;
     private JLabel spielstand2;
     private JLabel spieler1;
@@ -45,13 +47,13 @@ public class SpielfeldGUI extends JFrame {
             origButtons.add(new JButton(x.getIcon()));
         }
         this.buttons = buttons;
-        init();
+        init(timer);
         addListener();
         this.pack();
         setVisible(true);
     }
 
-    public void init() {
+    public void init(boolean timer) {
 
         labelFont = new Font("Monaco", Font.ITALIC, 20);
 
@@ -59,6 +61,9 @@ public class SpielfeldGUI extends JFrame {
         spieler1.setFont(labelFont);
         spieler2 = new JLabel("Spieler 2");
         spieler2.setFont(labelFont);
+        if (timer){
+            timerPanel = new JLabel("5");
+        }
 
         spielstand1 = new JLabel(String.valueOf(spiellogik.getSpielstaende(1)));
         spielstand1.setFont(labelFont);
@@ -97,6 +102,7 @@ public class SpielfeldGUI extends JFrame {
         obenPanel.add(obenLinks, BorderLayout.WEST);
         obenPanel.add(obenRechts, BorderLayout.EAST);
 
+        weiterspielen.setEnabled(false);
         untenPanel.add(hauptmenu, BorderLayout.CENTER);
         untenPanel.add(weiterspielen, BorderLayout.EAST);
 
@@ -119,6 +125,10 @@ public class SpielfeldGUI extends JFrame {
         weiterspielen.addActionListener(new WeiterspielenButtonListener());
     }
 
+    public void setTimer(int s){
+        timerPanel.setText(String.valueOf(s));
+    }
+
     class HauptmenuButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -138,38 +148,39 @@ public class SpielfeldGUI extends JFrame {
     class MemoryButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
+            JButton alterAlterButton;
+            JButton alterButton;
             int index = buttons.indexOf(e.getSource());
 
-            //if (spiellogik.getLetzerButtonIndex() != index){
-                //buttons.get(index).setEnabled(false);
-                buttons.get(index).setIcon(origButtons.get(index).getIcon());
+            buttons.get(index).setIcon(origButtons.get(index).getIcon());
 
+            int code = spiellogik.buttonGedrueckt(index);
 
-                switch (spiellogik.buttonGedrueckt(index)){
-                    case 0:
-                        //wenn timer, dann visuellen Timer starten
-                        break;
-                    case 1:
-                        //warten(2000);
-                        buttons.get(index).setIcon(null);
-                        buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
-                        buttons.get(index).setEnabled(true);
-                        buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
+            switch (code){
+                case 0:
+                    //nichts
+                    break;
+                case 1:
+                    //warten(2000);
+                    alterButton = buttons.get(index);
+                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
+                            //buttons.get(spiellogik.getLetzerButtonIndex()).setIcon(null);
+                    buttons.get(index).setEnabled(true);
+                    buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
 
-                        break;
-                    case 2:
-                        //warten(2000);
-                        buttons.get(index).setVisible(false);
-                        buttons.get(spiellogik.getLetzerButtonIndex()).setVisible(false);
+                    break;
+                case 2:
+                    //warten(2000);
+                    alterButton = buttons.get(index);
+                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
 
-                        spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
-                        spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
+                    spielstand1.setText(String.valueOf(spiellogik.getSpielstaende(1)));
+                    spielstand2.setText(String.valueOf(spiellogik.getSpielstaende(2)));
 
-                        break;
-                }
-            //}
-
-
+                    break;
+                case 3:
+                    weiterspielen.setEnabled(true);
+            }
 
         }
 

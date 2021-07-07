@@ -12,6 +12,7 @@ import model.Spielfeld;
 
 import javax.swing.*;
 import java.util.Collections;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -31,7 +32,7 @@ public class Spiellogik {
     private Vector<JButton> buttons;
     private Vector<ImageIcon> imageIcons;
     private Einstellungen einstellungen;
-    private Stoppuhr timer;
+    private java.util.Timer timer;
     private Spieler spieler1;
     private Spieler spieler2;
 
@@ -57,7 +58,7 @@ public class Spiellogik {
         }
 
         if (einstellungen.getSchwierigkeitsstufe() == 2){
-            timer = new Stoppuhr();
+            timer = new java.util.Timer();
         }
 
         spieler1 = new Spieler("Spieler 1", dataHandler.getPunktezahlSpieler1());
@@ -97,7 +98,7 @@ public class Spiellogik {
                 //Timer erstellten
             }
         }
-        else if (count < memorykarten.size() / 2){
+        else {
             Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
             code = 1;
             if (letzteKarte.getId() == jetzigeKarte.getId()){
@@ -116,13 +117,38 @@ public class Spiellogik {
             spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
             letzteKarte = null;
 
-        }
-        else {      //Spiel ist vorbei
-            dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
-            //entweder neues GUI, oder zurück zum Hauptmenu     //TODO
+            if (count >= memorykarten.size() / 2){  //Spiel ist vorbei
+                dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
+                code = 3;
+                //entweder neues GUI, oder zurück zum Hauptmenu     //TODO
+            }
         }
 
-        return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden
+        return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
+    }
+
+    private int sekunden = 0;
+    private void timerPanel(int s){
+        this.sekunden = s;
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                setTimerPanel();
+            }
+        };
+        timer.scheduleAtFixedRate(task,0, 1000);
+
+    }
+
+    private void setTimerPanel(){
+        if (sekunden <= 1){
+            spielfeldGUI.setTimer(sekunden);
+            sekunden--;
+        }
+        else {
+            timer.cancel();
+        }
+
     }
 
     /**
