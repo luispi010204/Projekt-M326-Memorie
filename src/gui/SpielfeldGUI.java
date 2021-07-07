@@ -75,7 +75,7 @@ public class SpielfeldGUI extends JFrame {
         spieler2 = new JLabel("Spieler 2");
         spieler2.setFont(labelFont);
         if (timer){
-            timerPanel = new JLabel("5");
+            timerPanel = new JLabel("10");
             timerPanel.setFont(labelFont);
         }
 
@@ -179,6 +179,8 @@ public class SpielfeldGUI extends JFrame {
             int code = spiellogik.buttonGedrueckt(index);
 
             switch (code){
+                case -1:
+                    break;
                 case 0:     //1. Karte gewählt
                     if (alterButton != null && alterAlterButton != null){
                         alterButton.setIcon(null);
@@ -191,8 +193,8 @@ public class SpielfeldGUI extends JFrame {
                     break;
                 case 1:     //2. Karte gewählt, aber nicht gleich
                     alterButton = buttons.get(index);
-                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
                     buttons.get(index).setEnabled(true);
+                    alterAlterButton = buttons.get(spiellogik.getLetzerButtonIndex());
                     buttons.get(spiellogik.getLetzerButtonIndex()).setEnabled(true);
 
                     break;

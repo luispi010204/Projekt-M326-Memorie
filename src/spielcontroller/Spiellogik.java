@@ -112,19 +112,20 @@ public class Spiellogik {
      */
     public int buttonGedrueckt(int indexOfButton){
         int code = -1;
+        Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
         if (ersterZug){
             if (letzerButtonIndex != indexOfButton){
                 letzerButtonIndex = indexOfButton;
+                letzteKarte = jetzigeKarte;
                 code = 0;
                 if (einstellungen.getSchwierigkeitsstufe() == 1){
                     timer = new Timer();
-                    timerPanel(5, indexOfButton);
+                    timerPanel(10, indexOfButton);
                 }
                 ersterZug = false;
             }
         }
-        else {
-            Memorykarte jetzigeKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
+        else if (letzerButtonIndex != indexOfButton){
             code = 1;
             if (letzteKarte.getId() == jetzigeKarte.getId()){
                 if (einstellungen.getBonusstreak()){
@@ -143,12 +144,16 @@ public class Spiellogik {
 
             if (count >= memorykarten.size() / 2){  //Spiel ist vorbei
                 dataHandler.saveGame(spieler1.getPunktestand(), spieler2.getPunktestand(), einstellungen);
+                letzerButtonIndex = -1;
+                letzteKarte = null;
+                spielerAnDerReihe = spieler1;
+                count = 0;
+                ersterZug = true;
                 code = 3;
             }
             ersterZug = true;
         }
 
-        letzteKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
         return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
     }
 
@@ -184,6 +189,7 @@ public class Spiellogik {
             timer.cancel();
             if (sekunden < 1){
                 buttons.get(indexOfButton).setIcon(null);
+                letzerButtonIndex = -1;
             }
             /*
             buttons.get(indexOfButton).setIcon(null);
@@ -204,6 +210,7 @@ public class Spiellogik {
     public void startGame(){
         //Wenn Schwierigkeitsstufe 1 ist, heisst das, dass es profimodus ist. Dies heisst, dass es einen Timer gibt
         spielfeldGUI = new SpielfeldGUI(this,kartenAufbereiten(),einstellungen.getSchwierigkeitsstufe() == 1);
+        letzerButtonIndex = -1;
         ersterZug = true;
 
     }
