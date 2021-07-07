@@ -95,7 +95,7 @@ public class Spiellogik {
             letzerButtonIndex = indexOfButton;
             code = 0;
             if (einstellungen.getSchwierigkeitsstufe() == 2){
-                //Timer erstellten
+                timerPanel(5);
             }
         }
         else {
