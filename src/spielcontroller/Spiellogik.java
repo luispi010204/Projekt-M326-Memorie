@@ -12,6 +12,7 @@ import model.Spielfeld;
 
 import javax.swing.*;
 import java.util.Collections;
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
@@ -57,9 +58,6 @@ public class Spiellogik {
             einstellungen = new Einstellungen();
         }
 
-        if (einstellungen.getSchwierigkeitsstufe() == 2){
-            timer = new java.util.Timer();
-        }
 
         spieler1 = new Spieler("Spieler 1", dataHandler.getPunktezahlSpieler1());
         spieler2 = new Spieler("Spieler 2", dataHandler.getPunktezahlSpieler2());
@@ -94,8 +92,9 @@ public class Spiellogik {
             letzteKarte = memorykarten.get(imageIcons.indexOf(buttons.get(indexOfButton).getIcon()));
             letzerButtonIndex = indexOfButton;
             code = 0;
-            if (einstellungen.getSchwierigkeitsstufe() == 2){
-                timerPanel(5);
+            if (einstellungen.getSchwierigkeitsstufe() == 1){
+                timer = new Timer();
+                timerPanel(5, indexOfButton);
             }
         }
         else {
@@ -126,26 +125,35 @@ public class Spiellogik {
         return code;    //0 = 1.Zug  |  1 = 2.Zug  |  2 = 2.Zug, Paar gefunden  |  3 = Spiel fertig
     }
 
+    private Spieler alterSpielerAnDerReihe;
     private int sekunden = 0;
-    private void timerPanel(int s){
+    private void timerPanel(int s, int indexOfButton){
         this.sekunden = s;
+        alterSpielerAnDerReihe = spielerAnDerReihe;
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                setTimerPanel();
+                setTimerPanel(indexOfButton);
             }
         };
         timer.scheduleAtFixedRate(task,0, 1000);
 
     }
 
-    private void setTimerPanel(){
-        if (sekunden <= 1){
+    private void setTimerPanel(int indexOfButton){
+        if (sekunden >= 1 && alterSpielerAnDerReihe == spielerAnDerReihe){
             spielfeldGUI.setTimer(sekunden);
             sekunden--;
         }
         else {
+            spielfeldGUI.setTimer(0);
             timer.cancel();
+            buttons.get(indexOfButton).setIcon(null);
+            if (spielerAnDerReihe == alterSpielerAnDerReihe){
+                buttons.get(letzerButtonIndex).setIcon(null);
+            }
+            spielerAnDerReihe = spielerAnDerReihe == spieler1 ? spieler2 : spieler1;
+            letzteKarte = null;
         }
 
     }

@@ -94,7 +94,8 @@ public class SpielfeldGUI extends JFrame {
 
 
         untenPanel = new JPanel(new BorderLayout());
-        obenPanel = new JPanel(new BorderLayout(0, 20));
+        //obenPanel = new JPanel(new BorderLayout(0, 20));
+        obenPanel = new JPanel(new GridLayout(1,3));
         obenLinks = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
         obenRechts = new JPanel(new FlowLayout(FlowLayout.RIGHT,20,10));
         obenLinks.add(spielstand1);
@@ -103,8 +104,11 @@ public class SpielfeldGUI extends JFrame {
         obenRechts.add(spieler2);
         obenRechts.add(spielstand2);
 
-        obenPanel.add(obenLinks, BorderLayout.WEST);
-        obenPanel.add(obenRechts, BorderLayout.EAST);
+        obenPanel.add(obenLinks);
+        if (timer){
+            obenPanel.add(timerPanel);
+        }
+        obenPanel.add(obenRechts);
 
         weiterspielen.setEnabled(false);
         untenPanel.add(hauptmenu, BorderLayout.CENTER);
@@ -168,6 +172,7 @@ public class SpielfeldGUI extends JFrame {
                                 alterButton.setVisible(false);
                                 alterAlterButton.setVisible(false);
                             }
+
                         }
                         break;
                     case 1:
@@ -189,6 +194,12 @@ public class SpielfeldGUI extends JFrame {
 
                         break;
                     case 3:
+                        alterButton.setIcon(null);
+                        alterAlterButton.setIcon(null);
+                        if (letzerCode == 2){
+                            alterButton.setVisible(false);
+                            alterAlterButton.setVisible(false);
+                        }
                         weiterspielen.setEnabled(true);
                 }
                 letzerCode = code;
